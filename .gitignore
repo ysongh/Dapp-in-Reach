@@ -3,3 +3,4 @@ node_modules/
 reach
 Dockerfile
 package.json
+.vscode
