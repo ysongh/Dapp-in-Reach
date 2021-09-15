@@ -8,8 +8,10 @@ const OUTCOME = ['Bob wins', 'Draw', 'Alice wins'];
 class App extends React.Component {
   state = {
     balance: 0,
-    msg: '',
-    scores: []
+    scores: [],
+    msg: [],
+    ctcAlice: null,
+    ctcBob: null
   }
 
   async componentDidMount() {
@@ -17,9 +19,16 @@ class App extends React.Component {
     const balAtomic = await stdlib.balanceOf(acc);
     this.setState({ balance: balAtomic.toString() });
 
-    const ctcAlice = acc.deploy(backend);
-    const ctcBob = acc.attach(backend, ctcAlice.getInfo());
+    const ctcAlice = await acc.deploy(backend);
+    const ctcBob = await acc.attach(backend, ctcAlice.getInfo());
 
+    this.setState({
+      ctcAlice: ctcAlice,
+      ctcBob: ctcBob
+    });
+  }
+
+  async playGame() {
     const Player = (Who) => ({
       getNum: () => {
         const num = Math.floor(Math.random() * 100);
@@ -29,15 +38,15 @@ class App extends React.Component {
       },
       seeOutcome: (outcome) => {
         console.log(`${Who} got ${OUTCOME[outcome]}`);
-        this.setState({ msg: `${Who} got ${OUTCOME[outcome]}`})
+        this.setState({ msg: [...this.state.msg, `${Who} got ${OUTCOME[outcome]}`] })
       },
     });
 
     await Promise.all([
-      backend.Alice(ctcAlice, {
+      backend.Alice(this.state.ctcAlice, {
         ...Player('Alice'),
       }),
-      backend.Bob(ctcBob, {
+      backend.Bob(this.state.ctcBob, {
         ...Player('Bob'),
       }),
     ]);
@@ -47,11 +56,14 @@ class App extends React.Component {
     return (
       <div>
         <h1>Result</h1>
-        <p>{this.state.balance} ETH</p>
+        <p>{this.state.balance / 10 ** 18} ETH</p>
+        <button onClick={this.playGame.bind(this)}>Play</button>
         {this.state.scores.map((s, i) => (
           <p key={i}>{s}</p>
         ))}
-        <p>{this.state.msg}</p>
+        {this.state.msg.map((s, i) => (
+          <p key={i}>{s}</p>
+        ))}
       </div>
     );
   }
