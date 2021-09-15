@@ -7,17 +7,18 @@ const OUTCOME = ['Bob wins', 'Draw', 'Alice wins'];
 
 class App extends React.Component {
   state = {
+    balance: 0,
     msg: '',
     scores: []
   }
 
   async componentDidMount() {
-    const startingBalance = stdlib.parseCurrency(10);
-    const accAlice = await stdlib.newTestAccount(startingBalance);
-    const accBob = await stdlib.newTestAccount(startingBalance);
+    const acc = await stdlib.getDefaultAccount();
+    const balAtomic = await stdlib.balanceOf(acc);
+    this.setState({ balance: balAtomic.toString() });
 
-    const ctcAlice = accAlice.deploy(backend);
-    const ctcBob = accBob.attach(backend, ctcAlice.getInfo());
+    const ctcAlice = acc.deploy(backend);
+    const ctcBob = acc.attach(backend, ctcAlice.getInfo());
 
     const Player = (Who) => ({
       getNum: () => {
@@ -46,6 +47,7 @@ class App extends React.Component {
     return (
       <div>
         <h1>Result</h1>
+        <p>{this.state.balance} ETH</p>
         {this.state.scores.map((s, i) => (
           <p key={i}>{s}</p>
         ))}
