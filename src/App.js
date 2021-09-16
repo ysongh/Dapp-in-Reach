@@ -16,7 +16,7 @@ class App extends React.Component {
     ctcBob: null
   }
 
-  async componentDidMount() {
+  async deployContract() {
     const acc = await stdlib.getDefaultAccount();
     const balAtomic = await stdlib.balanceOf(acc);
     this.setState({ balance: balAtomic.toString() });
@@ -59,13 +59,22 @@ class App extends React.Component {
       <div>
         <h1>Result</h1>
         <p>{this.state.balance / 10 ** 18} ETH</p>
-        <Button
-          color="primary"
-          variant="contained"
-          onClick={this.playGame.bind(this)}
-        >
-          Play
-        </Button>
+        {!this.state.ctcAlice
+          ? <Button
+              color="primary"
+              variant="contained"
+              onClick={this.deployContract.bind(this)}
+            >
+              Deploy
+            </Button>
+          : <Button
+              color="primary"
+              variant="contained"
+              onClick={this.playGame.bind(this)}
+            >
+              Play
+            </Button>
+        }
         {this.state.scores.map((s, i) => (
           <p key={i}>{s}</p>
         ))}
