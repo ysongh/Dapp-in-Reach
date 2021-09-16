@@ -1,0 +1,12 @@
+{
+  "name": "dapp-in-reach",
+  "type": "module",
+  "dependencies": {
+    "@material-ui/core": "^4.11.2",
+    "@material-ui/icons": "^4.11.2"
+  },
+  "scripts": {
+    "lint": "eslint --ignore-path .gitignore --ext .mjs .",
+    "index": "node --experimental-modules --unhandled-rejections=strict index.mjs"
+  }
+}

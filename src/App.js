@@ -1,5 +1,7 @@
 import React from 'react';
 import { loadStdlib } from '@reach-sh/stdlib';
+import { Button } from '@material-ui/core';
+
 import * as backend from '../build/index.main.mjs';
 const stdlib = loadStdlib(process.env);
 
@@ -57,7 +59,13 @@ class App extends React.Component {
       <div>
         <h1>Result</h1>
         <p>{this.state.balance / 10 ** 18} ETH</p>
-        <button onClick={this.playGame.bind(this)}>Play</button>
+        <Button
+          color="primary"
+          variant="contained"
+          onClick={this.playGame.bind(this)}
+        >
+          Play
+        </Button>
         {this.state.scores.map((s, i) => (
           <p key={i}>{s}</p>
         ))}
